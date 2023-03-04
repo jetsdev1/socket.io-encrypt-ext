@@ -75,7 +75,7 @@ module.exports = (secret, encryptedKey = 'msg') => (socket, next) => {
     const newHandler = function (...args) {
       if (args.length && typeof args[0] === "object") {
         try {
-          validateRequest(args);
+          validateRequest(args[0]);
         } catch (error) {
           socket[emit]("error", error);
           return;
