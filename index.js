@@ -50,7 +50,7 @@ module.exports = (secret, encryptedKey = 'msg') => (socket, next) => {
     Object.keys(data).forEach((key) => {
       if (key !== encryptedKey) {
         const error = new Error(
-          `Couldn't decrypt. Unacceptable request body sent. (${e.message})`
+          "Couldn't decrypt. Unacceptable request body sent."
         );
         error.code = "ERR_BODY_ERROR";
         throw error;
