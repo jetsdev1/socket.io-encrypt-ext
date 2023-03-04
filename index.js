@@ -8,24 +8,24 @@ const {
 } = require("./symbol");
 const reservedEvents = require("./reserved-events");
 
-module.exports = (secret) => (socket, next) => {
+module.exports = (secret, encryptedKey = 'msg') => (socket, next) => {
   const handlers = new WeakMap();
 
   const encrypt = (args) => {
-    const msg = [];
+    const encrypted = [];
     let ack;
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (i === args.length - 1 && typeof arg === "function") {
         ack = arg;
       } else {
-        msg.push(
+        encrypted.push(
           CryptoJS.AES.encrypt(JSON.stringify(arg), secret).toString()
         );
       }
     }
-    if (!msg.length) return args;
-    args = [{ msg }];
+    if (!encrypted.length) return args;
+    args = [{ [encryptedKey]: encrypted }];
     if (ack) args.push(ack);
     return args;
   };
@@ -46,6 +46,18 @@ module.exports = (secret) => (socket, next) => {
     }
   };
 
+  const validateRequest = (data) => {
+    Object.keys(data).forEach((key) => {
+      if (key !== encryptedKey) {
+        const error = new Error(
+          `Couldn't decrypt. Unacceptable request body sent. (${e.message})`
+        );
+        error.code = "ERR_BODY_ERROR";
+        throw error;
+      }
+    });
+  };
+
   socket[emit] = socket.emit;
   socket[on] = socket.on;
   socket[off] = socket.off;
@@ -61,18 +73,19 @@ module.exports = (secret) => (socket, next) => {
     if (reservedEvents.includes(event)) return socket[on](event, handler);
 
     const newHandler = function (...args) {
-      if (
-        args.length &&
-        typeof args[0] === "object" &&
-        Object.hasOwn(args[0], "msg")
-      ) {
-        try {
-          args = decrypt(args[0].msg);
-        } catch (error) {
-          socket[emit]("error", error);
-          return;
+      if (args.length && typeof args[0] === "object") {
+        validateRequest(args);
+
+        if (Object.hasOwn(args[0], encryptedKey)) {
+          try {
+            args = decrypt(args[0][encryptedKey]);
+          } catch (error) {
+            socket[emit]("error", error);
+            return;
+          }
         }
       }
+
       return handler.call(this, ...args);
     };
 
