@@ -1,11 +1,19 @@
 /*https://socket.io/docs/emit-cheatsheet/*/
 module.exports = [
-  'error',
   'connect',
+  'connecting',
+  'connect_error',
+  'connect_timeout',
+  'reconnect',
+  'reconnect_attempt',
+  'reconnecting',
+  'reconnect_error',
+  'reconnect_failed',
   'disconnect',
   'disconnecting',
+  'error',
   'newListener',
   'removeListener',
   'ping',
-  'pong'
+  'pong',
 ];
