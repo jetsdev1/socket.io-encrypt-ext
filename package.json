@@ -1,6 +1,6 @@
 {
   "name": "socket.io-encrypt-ext",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Send encrypted and decrypt messages",
   "main": "index.js",
   "repository": "jetsdev1/socket.io-encrypt-ext",
