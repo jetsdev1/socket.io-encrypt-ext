@@ -1,4 +1,4 @@
-# socket.io-encrypt
+# socket.io-encrypt-ext
 
 Patches `socket.emit` and and `socket.on` functions to send encrypted and decrypt messages using **[cryptr]**.
 
