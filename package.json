@@ -1,12 +1,12 @@
 {
   "name": "socket.io-encrypt-ext",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Send encrypted and decrypt messages",
   "main": "index.js",
   "repository": "jetsdev1/socket.io-encrypt-ext",
   "peerDependencies": {
-    "socket.io": "^4.5.1",
-    "socket.io-client": "^4.5.1"
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   },
   "dependencies": {
     "crypto-js": "^4.1.1"
